@@ -228,4 +228,20 @@ public static class KataTrainer
     }
 
     #endregion
+
+    #region Valid Parentheses
+    
+    // https://www.codewars.com/kata/52774a314c2333f0a7000688
+
+    public static bool ValidParentheses(string input)
+    {
+        if (input.Length == 0) return true;
+        var clearString = string.Join("", input.Where(it => it is ')' or '('));
+
+        var replaced = clearString.Replace("()", "");
+
+        return clearString.Length != replaced.Length && ValidParentheses(replaced);
+    }
+
+    #endregion
 }
