@@ -151,4 +151,81 @@ public static class KataTrainer
     private static int RoundToRange(this int num, int start = 0, int end = 255) => num > end ? end : num < start ? start : num;
 
     #endregion
+
+    #region PaginationHelper
+
+    // https://www.codewars.com/kata/515bb423de843ea99400000a/train/csharp
+    
+    public class PagnationHelper<T>
+    {
+        // TODO: Complete this class
+
+        private readonly IList<T> _collection;
+        private readonly int _itemsPerPage;
+
+        /// <summary>
+        /// Constructor, takes in a list of items and the number of items that fit within a single page
+        /// </summary>
+        /// <param name="collection">A list of items</param>
+        /// <param name="itemsPerPage">The number of items that fit within a single page</param>
+        public PagnationHelper(IList<T> collection, int itemsPerPage)
+        {
+            _collection = collection;
+            _itemsPerPage = itemsPerPage;
+        }
+
+        /// <summary>
+        /// The number of items within the collection
+        /// </summary>
+        public int ItemCount => _collection.Count;
+
+        /// <summary>
+        /// The number of pages
+        /// </summary>
+        public int PageCount => (int)Math.Ceiling(ItemCount / (double)_itemsPerPage);
+
+        /// <summary>
+        /// Returns the number of items in the page at the given page index 
+        /// </summary>
+        /// <param name="pageIndex">The zero-based page index to get the number of items for</param>
+        /// <returns>The number of items on the specified page or -1 for pageIndex values that are out of range</returns>
+        public int PageItemCount(int pageIndex) =>
+            !(pageIndex >= PageCount || pageIndex < 0) 
+                ? _collection.Skip(pageIndex * _itemsPerPage).Take(_itemsPerPage).Count()
+                : -1;
+
+        /// <summary>
+        /// Returns the page index of the page containing the item at the given item index.
+        /// </summary>
+        /// <param name="itemIndex">The zero-based index of the item to get the pageIndex for</param>
+        /// <returns>The zero-based page index of the page containing the item at the given item index or -1 if the item index is out of range</returns>
+        public int PageIndex(int itemIndex)
+        {
+            if (ItemCount <= itemIndex || itemIndex < 0) return -1;
+
+            var element = _collection[itemIndex];
+            var page = 0;
+            while (!PageContainsElement(page, element)) page++;
+
+            return page;
+        }
+
+        /// <summary>
+        /// Gets slice of original collection by pageIndex
+        /// </summary>
+        /// <param name="pageIndex">Zero-based page index</param>
+        /// <returns>Page of original collection</returns>
+        private IList<T> GetPage(int pageIndex) =>
+            _collection.Skip(pageIndex * _itemsPerPage).Take(_itemsPerPage).ToList();
+
+        /// <summary>
+        /// Indicates is element of collection is on passed page
+        /// </summary>
+        /// <param name="pageIndex">Page</param>
+        /// <param name="element">Element of original collection</param>
+        /// <returns>Boolean value indicates is passed element on passed page</returns>
+        private bool PageContainsElement(int pageIndex, T element) => GetPage(pageIndex).Contains(element);
+    }
+
+    #endregion
 }
