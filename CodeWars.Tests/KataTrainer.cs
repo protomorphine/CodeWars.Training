@@ -129,5 +129,26 @@ public static class KataTrainer
 
     #endregion
 
+    #region Find the unique number
     
+    // https://www.codewars.com/kata/585d7d5adb20cf33cb000235/train/csharp
+    
+    public static int GetUnique(IEnumerable<int> numbers) =>
+        numbers.GroupBy(it => it).Select(it => new
+        {
+            it.Key,
+            Count = it.Count()
+        }).First(it => it.Count == 1).Key;
+
+    #endregion
+
+    #region RGB To Hex Conversion
+    
+    // https://www.codewars.com/kata/513e08acc600c94f01000001/train/csharp
+    
+    public static string Rgb(int r, int g, int b) => $"{r.RoundToRange():x2}{g.RoundToRange():x2}{b.RoundToRange():x2}".ToUpper();
+
+    private static int RoundToRange(this int num, int start = 0, int end = 255) => num > end ? end : num < start ? start : num;
+
+    #endregion
 }
