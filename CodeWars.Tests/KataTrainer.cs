@@ -244,4 +244,42 @@ public static class KataTrainer
     }
 
     #endregion
+
+    #region Greed is Good
+
+    // https://www.codewars.com/kata/5270d0d18625160ada0000e4/train/csharp
+
+    public static int Score(int[] dice) =>
+        dice.GroupBy(it => it)
+            .Sum(it => GetScore(it.Key, it.Count()));
+
+    private static int GetScore(int value, int count) =>
+        FactorizeBy(3, count).Sum(it => GetScoreFromMap(value, it));
+    
+    /// <summary>
+    /// Divide the number into terms of a certain part
+    /// For example:
+    /// FactorizeBy(3, 10) return [3, 3, 3, 1]
+    /// </summary>
+    /// <param name="by">Part</param>
+    /// <param name="number">Number</param>
+    /// <returns>IEnumerable with terms</returns>
+    private static IEnumerable<int> FactorizeBy(int by, int number) =>
+        Enumerable.Range(1, (number / by) + (number % by)).Select(it => it <= number / by ? by : 1);
+
+    private static int GetScoreFromMap(int value, int count) =>
+        count switch
+        {
+            3 => Convert.ToInt32(value != 1 ? $"{value}00" : $"{value}000"),
+            1 => value switch
+            {
+                1 => 100,
+                5 => 50,
+                _ => 0
+            },
+            _ => 0
+        };
+    
+
+    #endregion
 }
