@@ -279,7 +279,43 @@ public static class KataTrainer
             },
             _ => 0
         };
-    
+
+    #endregion
+
+    #region Human readable duration format
+
+    // https://www.codewars.com/kata/52742f58faf5485cae000b9a/train/csharp
+
+    public static string FormatDuration(int seconds)
+    {
+        if (seconds == 0) return "now";
+        
+        var sb = new StringBuilder();
+        var diff = DateTimeOffset.FromUnixTimeSeconds(seconds) - DateTimeOffset.UnixEpoch;
+
+        var dateComponents = new List<KeyValuePair<string, int>>()
+            {
+                new("year", diff.Days / 365),
+                new("day", diff.Days % 365),
+                new("hour", diff.Hours),
+                new("minute", diff.Minutes),
+                new("second", diff.Seconds)
+            }
+            .Where(c => c.Value != 0)
+            .ToList();
+
+        for (var i = 0; i < dateComponents.Count; i++)
+        {
+            var postfix = dateComponents[i].Value > 1 ? "s" : "";
+
+            if (i == dateComponents.Count - 1 && dateComponents.Count > 1) sb.Append(" and ");
+            if (i != 0 && i != dateComponents.Count - 1) sb.Append(", ");
+
+            sb.Append($"{dateComponents[i].Value} {dateComponents[i].Key + postfix}");
+        }
+
+        return sb.ToString();
+    }
 
     #endregion
 }
